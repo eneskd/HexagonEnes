@@ -18,6 +18,9 @@ public class Hex
     public int q; // 60 degree cw to r
     public int r; // Vertical axis
     public int s; // Not necessary = - q - r 
+    
+    public HexTile parent;
+
 
     public int X => q;
     public int Y => r + q / 2;
@@ -34,6 +37,8 @@ public class Hex
     public static float YScale = 1;
 
     public static Vector3 Origin = Vector3.zero;
+
+    #region Constructors
 
     public Hex(int q, int r, int s)
     {
@@ -55,6 +60,14 @@ public class Hex
         this.r = r;
         this.s = -q - r;
     }
+    
+    public Hex(int q, int r, HexTile parent)
+    {
+        this.q = q;
+        this.r = r;
+        this.s = -q - r;
+        this.parent = parent;
+    }
 
     public static Hex FromXY(int x, int y)
     {
@@ -62,6 +75,16 @@ public class Hex
         var r = y - x / 2;
         return new Hex(q, r);
     }
+    
+    public static Hex FromXY(int x, int y, HexTile parent)
+    {
+        var q = x;
+        var r = y - x / 2;
+        return new Hex(q, r, parent);
+    }
+
+
+    #endregion
 
     public void SetCoord(int q, int r)
     {
@@ -93,6 +116,7 @@ public class Hex
 
     public Vector3 GetCornerPosition(int direction)
     {
+        direction %= 6;
         var angle = direction * Mathf.PI / 3;
         var length = HexTransform.EdgeLength;
         var x = Mathf.Cos(angle) * length * XScale;
@@ -107,7 +131,30 @@ public class Hex
 
     public Hex GetNeighbour(int direction)
     {
-        return this + NeighborDirections[direction];
+        return this + NeighborDirections[direction % 6];
+    }
+    
+    public void MoveHex(HexNeighbourDirection direction, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            MoveHex((int) direction);
+        }
+    }
+
+    public void MoveHex(HexNeighbourDirection direction)
+    {
+        MoveHex((int) direction);
+    }
+    
+    
+
+    public void MoveHex(int direction)
+    {
+        var hex = GetNeighbour(direction);
+        q = hex.q;
+        r = hex.r;
+        s = hex.s;
     }
 
     #region Operations

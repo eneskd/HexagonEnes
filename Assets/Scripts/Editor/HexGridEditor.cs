@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Editor
 {
     [CustomEditor(typeof(HexGrid))]
-    public class GridManagerEditor : UnityEditor.Editor
+    public class HexGridEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
@@ -23,11 +23,17 @@ namespace Editor
                 gridManager.ClearGrid();
             }
 
+           
+            
             if (GUILayout.Button("Snap"))
             {
                 gridManager.Snap();
             }
             GUILayout.EndHorizontal();
+            
+           
+            
+            
         }
     }
 }
